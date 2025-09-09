@@ -11,7 +11,7 @@
 
 *   **Склонируйте свою копию** на компьютер:
     ```bash
-    git clone https://github.com/PHP-SHOP/НАЗВАНИЕ_РЕПОЗИТОРИЯ.git
+    git clone https://github.com/PHP-SHOP.git
     ```
 *   **Создайте новую ветку** для ваших правок:
     ```bash
