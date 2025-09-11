@@ -2,22 +2,53 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\MenuItem;
 
-class DatabaseSeeder extends Seeder
+class MenuItemsSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // User::factory(10)->create();
+        $menuItems = [
+            [
+                'title' => 'Главная',
+                'url' => '/',
+                'sort_order' => 1
+            ],
+            [
+                'title' => 'Каталог',
+                'url' => '/catalog',
+                'sort_order' => 2,
+                'children' => [
+                    ['title' => 'Все товары', 'url' => '/catalog/all', 'sort_order' => 1],
+                    ['title' => 'Акции', 'url' => '/catalog/sale', 'sort_order' => 2],
+                    ['title' => 'Новинки', 'url' => '/catalog/new', 'sort_order' => 3],
+                ]
+            ],
+            [
+                'title' => 'О нас',
+                'url' => '/about',
+                'sort_order' => 3
+            ],
+            [
+                'title' => 'Контакты',
+                'url' => '/contacts',
+                'sort_order' => 4
+            ]
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($menuItems as $itemData) {
+            $children = $itemData['children'] ?? null;
+            unset($itemData['children']);
+            
+            $menuItem = MenuItem::create($itemData);
+            
+            if ($children) {
+                foreach ($children as $childData) {
+                    $childData['parent_id'] = $menuItem->id;
+                    MenuItem::create($childData);
+                }
+            }
+        }
     }
 }

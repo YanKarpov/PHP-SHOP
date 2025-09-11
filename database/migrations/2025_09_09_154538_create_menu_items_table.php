@@ -4,28 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateMenuItemsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('url');
-            $table->foreignId('parent_id')->nullable()->constrained('menu_items')->onDelete('cascade');
-            $table->integer('position')->default(0);
+            $table->integer('parent_id')->nullable();
+            $table->integer('sort_order')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('menu_items');
     }
-};
+}
