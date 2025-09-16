@@ -13,8 +13,11 @@ class Banner extends Model
         'title',
         'description',
         'image_url',
+        'alt_text',
         'link_url',
+        'target',
         'position',
+        'type',
         'is_active',
         'start_date',
         'end_date'
@@ -25,6 +28,20 @@ class Banner extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    // Типы баннеров
+    const TYPE_MAIN = 'main';
+    const TYPE_SIDEBAR = 'sidebar';
+    const TYPE_FOOTER = 'footer';
+
+    public static function getTypes()
+    {
+        return [
+            self::TYPE_MAIN => 'Основной',
+            self::TYPE_SIDEBAR => 'Боковая панель',
+            self::TYPE_FOOTER => 'Футер'
+        ];
+    }
 
     public function scopeActive($query)
     {
@@ -42,5 +59,10 @@ class Banner extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('position')->orderBy('created_at', 'desc');
+    }
+
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
     }
 }

@@ -23,7 +23,7 @@ class BannerController extends Controller
     {
         $banners = Banner::active()
             ->ordered()
-            ->limit(3) // Показываем 3 активных баннера
+            ->limit(3)
             ->get();
 
         return view('home', compact('banners'));
