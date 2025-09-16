@@ -28,7 +28,7 @@ class AdminProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:0',
         ]);
 
         Product::create($validated);
@@ -56,7 +56,7 @@ class AdminProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:0',
         ]);
 
         $product->update($validated);

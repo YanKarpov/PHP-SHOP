@@ -13,7 +13,7 @@
                 Админ Панель
             </a>
             <div class="navbar-nav">
-                <a class="nav-link" href="/">← На сайт</a>
+                <a class="nav-link" href="/preview-products">← На сайт</a>
             </div>
         </div>
     </nav>

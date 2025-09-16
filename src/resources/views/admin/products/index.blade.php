@@ -27,11 +27,11 @@
                 <td>{{ $product->id }}</td>
                 <td>{{ $product->name }}</td>
                 <td>{{ number_format($product->price, 2) }} ₽</td>
-                <td>{{ $product->stock }}</td>
+                <td>{{ $product->quantity }}</td>
                 <td>
                     <div class="btn-group">
                         <a href="{{ route('admin.products.show', $product) }}" class="btn btn-sm btn-info">
-                            👁️
+                            👀
                         </a>
                         <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-primary">
                             ✏️
