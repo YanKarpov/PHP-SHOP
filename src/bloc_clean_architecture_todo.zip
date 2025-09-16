@@ -1,0 +1,33 @@
+<?php
+// app/Models/Store.php
+
+class Store
+{
+    public $name;
+    public $street;
+    public $city;
+    public $postal_code;
+    public $phone;
+    public $email;
+    public $map_url;
+    public $working_hours;
+    public $is_active;
+
+    public function __construct(array $attributes = [])
+    {
+        foreach ($attributes as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
+    public function getFullAddressAttribute(): string {
+        $parts = array_filter([$this->street, $this->city, $this->postal_code]);
+        return implode(', ', $parts);
+    }
+
+    public function getTelephoneHrefAttribute(): ?string {
+        if (!$this->phone) return null;
+        $clean = preg_replace('/[^0-9+]/', '', $this->phone);
+        return 'tel:' . $clean;
+    }
+}
