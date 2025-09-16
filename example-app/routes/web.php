@@ -19,20 +19,13 @@ Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])
 // Группа роутов для админ-панели
 Route::prefix('admin')->name('admin.')->group(function () {
     // Модерация отзывов
-    Route::get('/reviews', [AdminReviewController::class, 'index'])
-        ->name('reviews.index');
-    
-    Route::get('/reviews/{review}', [AdminReviewController::class, 'show'])
-        ->name('reviews.show');
-    
-    Route::patch('/reviews/{review}/approve', [AdminReviewController::class, 'approve'])
-        ->name('reviews.approve');
-    
-    Route::patch('/reviews/{review}/reject', [AdminReviewController::class, 'reject'])
-        ->name('reviews.reject');
-    
-    Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])
-        ->name('reviews.destroy');
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/reviews/{review}', [AdminReviewController::class, 'show'])->name('reviews.show');
+    Route::get('/reviews/{review}/edit', [AdminReviewController::class, 'edit'])->name('reviews.edit');
+    Route::patch('/reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::patch('/reviews/{review}/reject', [AdminReviewController::class, 'reject'])->name('reviews.reject');
+    Route::put('/reviews/{review}', [AdminReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
 // Простая аутентификация для демо

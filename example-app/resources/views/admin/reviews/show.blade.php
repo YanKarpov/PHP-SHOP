@@ -68,6 +68,10 @@
                 </p>
 
                 <div class="mt-4">
+                    <a href="{{ route('admin.reviews.edit', $review) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Редактировать отзыв
+                    </a>
+
                     @if(!$review->is_approved)
                         <form action="{{ route('admin.reviews.approve', $review) }}" method="POST" class="d-inline">
                             @csrf

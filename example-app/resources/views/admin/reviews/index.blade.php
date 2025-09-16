@@ -84,6 +84,11 @@
                                         <td>{{ $review->created_at->format('d.m.Y H:i') }}</td>
                                         <td>
                                             <div class="btn-group">
+                                                <a href="{{ route('admin.reviews.edit', $review) }}" 
+                                                   class="btn btn-sm btn-primary" title="Редактировать">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+
                                                 <a href="{{ route('admin.reviews.show', $review) }}" 
                                                    class="btn btn-sm btn-info" title="Просмотр">
                                                     <i class="fas fa-eye"></i>

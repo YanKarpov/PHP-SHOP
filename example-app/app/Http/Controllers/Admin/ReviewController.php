@@ -18,7 +18,6 @@ class ReviewController extends Controller
         });
     }
 
-    // Список всех отзывов для модерации
     public function index()
     {
         $reviews = Review::with('product')
@@ -29,36 +28,45 @@ class ReviewController extends Controller
         return view('admin.reviews.index', compact('reviews'));
     }
 
-    // Одобрение отзыва
     public function approve(Review $review)
     {
         $review->update(['is_approved' => true]);
-
-        return redirect()->route('admin.reviews.index')
-            ->with('success', 'Отзыв одобрен');
+        return redirect()->route('admin.reviews.index')->with('success', 'Отзыв одобрен');
     }
 
-    // Отклонение отзыва
     public function reject(Review $review)
     {
         $review->update(['is_approved' => false]);
-
-        return redirect()->route('admin.reviews.index')
-            ->with('success', 'Отзыв отклонен');
+        return redirect()->route('admin.reviews.index')->with('success', 'Отзыв отклонен');
     }
 
-    // Удаление отзыва
     public function destroy(Review $review)
     {
         $review->delete();
-
-        return redirect()->route('admin.reviews.index')
-            ->with('success', 'Отзыв удален');
+        return redirect()->route('admin.reviews.index')->with('success', 'Отзыв удален');
     }
 
-    // Просмотр отзыва
     public function show(Review $review)
     {
         return view('admin.reviews.show', compact('review'));
+    }
+
+    public function edit(Review $review)
+    {
+        return view('admin.reviews.edit', compact('review'));
+    }
+
+    public function update(Request $request, Review $review)
+    {
+        $validated = $request->validate([
+            'author_name' => 'required|string|max:255',
+            'author_email' => 'required|email|max:255',
+            'rating' => 'required|integer|between:1,5',
+            'comment' => 'required|string|min:10|max:1000',
+            'is_approved' => 'sometimes|boolean'
+        ]);
+
+        $review->update($validated);
+        return redirect()->route('admin.reviews.show', $review)->with('success', 'Отзыв успешно обновлен');
     }
 }
