@@ -1,64 +1,52 @@
-# Шпаргалка-подсказка || А как мне работать с github?
-## Процесс внесения изменений
+# Cart+Checkout Demo Setup Instructions
 
-Важно: Чтобы вносить изменения, нужно быть контрибьютором. Есть два способа, как мне известно
+Working demo for Cart & Checkout, **IGNORE login and products page**.
 
+![Preview](preview.gif)
 
-## Вариант 1: Прямая работа (после добавления в контрибьюторы)
+## Features
 
-Чтобы получить доступ: скинь мне свой логин GitHub, чтобы мог добавить
+### Main Features
+- **Cart Management**: Add/remove products, update quantities, view cart contents
+- **Checkout Process**: Complete order processing with stock updates
 
-Клонируй основной репозиторий:
-```
-git clone https://github.com/YanKarpov/PHP-SHOP.git
-```
-Создай ветку для задачи:
-```
-git checkout -b название-ветки
-```
+### Supporting Features
+- **Products**: View products with name, description, price, and stock
+- **Authentication**: Simple login system for demo users
 
-Работай, коммить, пуши:
-```
-git add .
-git commit -m "Описание изменений"
-git push origin название-ветки
-```
+## Setup Instructions
 
-## Вариант 2: Через Fork (можно начать сразу работу в теории)
+1. **Install Dependencies** (if not already done):
+   ```bash
+   composer install
+   npm install
+   ```
 
-При таком варике, можно будет отправить PR и через него стать так же контрибьютором, возможно с меньшим взаимодействием через меня
+2. **Environment Setup**:
+   - Copy `.env.example` to `.env`
+   - Configure your database settings in `.env`
+   - Generate application key: `php artisan key:generate`
 
-Сделай Fork репозитория (кнопка Fork справа сверху)
+3. **Database Setup**:
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-Клонируй свой форк себе на компьютер:
-```
-git clone https://github.com/ТВОЙ_АККАУНТ/PHP-SHOP.git
-```
-Создай ветку для задачи:
-```
-git checkout -b название-ветки
-Работай, коммить, пуши в свой форк
-```
-Создай Pull Request через интерфейс GitHub
+4. **Start the Application**:
+   ```bash
+   php artisan serve
+   ```
 
-Важные моменты:
-Название ветки должно быть понятным (например: add-cart, fix-login)
+5. **Access the Demo**:
+   - Goto: http://localhost:8000
+   - Grab any user:
+     - john@example.com : password123
+     - jane@example.com : password123
+     - bob@example.com : password123
 
-Коммиты должны быть атомарными и с ясными описаниями
+## DB Schema
 
-Перед пушем всегда делай pull, чтобы получить свежие изменения
-
-Не пуши в main ветку - только через ветки и PR
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **users**: id, name, email, password, timestamps
+- **products**: id, name, description, price, stock, timestamps
+- **carts**: id, user_id, product_id, quantity, timestamps
