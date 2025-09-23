@@ -15,4 +15,9 @@ class Product extends Model
         'price',
         'quantity'
     ];
+    // Добавляем связь с элементами корзины
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
 }

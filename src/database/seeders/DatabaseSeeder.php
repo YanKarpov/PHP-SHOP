@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         // Сначала создаем продукты
         $this->call([
             ProductSeeder::class,
+            CartSeeder::class,
         ]);
 
         // Затем пользователей
