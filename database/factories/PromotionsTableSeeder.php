@@ -10,3 +10,7 @@ class PromotionsTableSeeder extends Seeder
         Promotion::factory()->count(5)->create();
     }
 }
+// <?p
+// ...
+
+// Чтобы увидеть весь текст, нажмите на кнопку *Развернуть весь ответ* ⬇️
