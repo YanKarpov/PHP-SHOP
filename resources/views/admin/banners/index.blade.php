@@ -77,4 +77,5 @@
         {{ $banners->links() }}
     </div>
 </div>
-@endsection
+
+@endsection 
