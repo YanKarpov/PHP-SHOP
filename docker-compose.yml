@@ -5,7 +5,7 @@ services:
     build:
       context: ./docker/php
     volumes:
-      - ./src:/var/www
+      - ./:/var/www
     networks:
       - laravel
     command: >
@@ -16,7 +16,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./src:/var/www
+      - ./:/var/www
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
