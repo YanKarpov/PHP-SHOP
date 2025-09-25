@@ -53,3 +53,17 @@ Route::post('/login', function (Request $request) {
 // Выход
 Route::post('/logout', fn() => redirect()->route('home'))->name('logout');
 
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+
+Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
+
+if (app()->environment('local')) {
+    Route::prefix('admin')->group(function () {
+        Route::get('/news', [NewsAdminController::class, 'index'])->name('admin.news.index');
+        Route::get('/news/create', [NewsAdminController::class, 'create'])->name('admin.news.create');
+        Route::post('/news', [NewsAdminController::class, 'store'])->name('admin.news.store');
+        Route::get('/news/{id}/edit', [NewsAdminController::class, 'edit'])->name('admin.news.edit');
+        Route::put('/news/{id}', [NewsAdminController::class, 'update'])->name('admin.news.update');
+        Route::delete('/news/{id}', [NewsAdminController::class, 'destroy'])->name('admin.news.destroy');
+    });
+}
