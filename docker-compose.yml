@@ -4,15 +4,25 @@ services:
   php:
     build:
       context: ./docker/php
+    container_name: laravel_php
     volumes:
       - ./:/var/www
     networks:
       - laravel
+    depends_on:
+      - mysql
     command: >
       sh -c "chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && php-fpm"
+    environment:
+      APP_ENV: local
+      DB_HOST: mysql
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel
+      DB_PASSWORD: secret
 
   nginx:
     image: nginx:latest
+    container_name: laravel_nginx
     ports:
       - "8080:80"
     volumes:
@@ -25,6 +35,7 @@ services:
 
   mysql:
     image: mysql:8.0
+    container_name: laravel_mysql
     environment:
       MYSQL_DATABASE: laravel
       MYSQL_USER: laravel
@@ -36,6 +47,20 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - laravel
+    command: --default-authentication-plugin=mysql_native_password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    networks:
+      - laravel
+    depends_on:
+      - mysql
 
 networks:
   laravel:

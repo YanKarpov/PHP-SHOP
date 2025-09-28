@@ -6,17 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('quantity')->default(0); 
-        });
+        // Проверяем, существует ли столбец перед добавлением
+        if (!Schema::hasColumn('products', 'quantity')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->integer('quantity')->default(0); 
+            });
+        }
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('quantity'); 
-        });
+        // Проверяем, существует ли столбец перед удалением
+        if (Schema::hasColumn('products', 'quantity')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn('quantity'); 
+            });
+        }
     }
 };
