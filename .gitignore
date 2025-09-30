@@ -1,18 +1,37 @@
+# общие исключения
+*.log
+.DS_Store
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
+
+# среда и конфиги
+.env
+.env.backup
+.env.production
+auth.json
+
+# IDE/редакторы
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+
+# зависимости и билды
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
+/storage/pail
 /vendor
-.env
-.env.backup
-.env.production
-.phpunit.result.cache
+
+# Homestead/Vagrant
 Homestead.json
 Homestead.yaml
-auth.json
+
+# прочее
+Thumbs.db
 npm-debug.log
 yarn-error.log
-/.fleet
-/.idea
-/.vscode
