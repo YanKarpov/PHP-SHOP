@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CartController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,4 +24,11 @@ Route::prefix('products/{product}')->group(function () {
     Route::get('/reviews', [ReviewController::class, 'index']);
     Route::get('/rating', [ReviewController::class, 'getProductRating']);
     Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth:api');
+});
+
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'getCart']);
+    Route::post('/add', [CartController::class, 'addItem']);
+    Route::delete('/remove', [CartController::class, 'removeItem']);
+    Route::post('/clear', [CartController::class, 'clearCart']);
 });

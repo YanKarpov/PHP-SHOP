@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\CartController;
 
 use App\Http\Controllers\AdThesisController;
 
@@ -40,6 +41,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
+
+// Страница для тестирования корзины
+Route::get('/cart-test', function () {
+    return view('cart-test');
+});
+
+// Web-версия API для простого тестирования
+Route::prefix('cart')->group(function () {
+    Route::get('/web', [CartController::class, 'getCart'])->name('cart.web');
+    Route::post('/web/add', [CartController::class, 'addItem'])->name('cart.web.add');
+});
+
 // Простая аутентификация для демо
 Route::get('/login', fn() => view('simple-auth'))->name('login');
 Route::post('/login', function (Request $request) {
@@ -52,4 +65,5 @@ Route::post('/login', function (Request $request) {
 
 // Выход
 Route::post('/logout', fn() => redirect()->route('home'))->name('logout');
+
 
