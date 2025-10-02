@@ -1,0 +1,65 @@
+{{-- resources/views/stores/index.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Контакты и адреса магазинов')
+
+@section('content')
+<div class="container py-4">
+	<h1 class="mb-3">Контакты и адреса</h1>
+
+	@if($stores->isEmpty())
+		<p>Пока нет активных магазинов.</p>
+	@else
+		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+			@foreach($stores as $store)
+				<div class="col">
+					<section class="card h-100 p-3" itemscope itemtype="https://schema.org/Store">
+						<meta itemprop="name" content="{{ $store->name }}">
+						<h3 class="h5 mb-2">{{ $store->name }}</h3>
+
+						<p class="mb-2" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+							<span itemprop="streetAddress">{{ $store->street }}</span>,
+							<span itemprop="addressLocality">{{ $store->city }}</span>
+							@if($store->postal_code)
+								, <span itemprop="postalCode">{{ $store->postal_code }}</span>
+							@endif
+							@if($store->map_url)
+								<br>
+								<a class="link-primary" href="{{ $store->map_url }}" target="_blank" rel="noopener">Открыть карту</a>
+							@endif
+						</p>
+
+						@if($store->phone)
+							<p class="mb-1">
+								<strong>Телефон:</strong>
+								<a itemprop="telephone" href="{{ $store->telephone_href }}">{{ $store->phone }}</a>
+							</p>
+						@endif
+
+						@if($store->email)
+							<p class="mb-2">
+								<strong>E‑mail:</strong>
+								<a itemprop="email" href="mailto:{{ $store->email }}">{{ $store->email }}</a>
+							</p>
+						@endif
+
+						@if(!empty($store->working_hours))
+							<div>
+								<strong>Время работы:</strong>
+								<ul class="mb-0">
+									@foreach($store->working_hours as $days => $hours)
+										<li>
+											<span>{{ $days }}:</span>
+											<span itemprop="openingHours">{{ $hours }}</span>
+										</li>
+									@endforeach
+								</ul>
+							</div>
+						@endif
+					</section>
+				</div>
+			@endforeach
+		</div>
+	@endif
+</div>
+@endsection
