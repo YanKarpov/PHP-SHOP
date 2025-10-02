@@ -2,32 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PromotionsController;
+use App\Http\Controllers\Admin\PromotionAdminController;
 
-
+// Главная
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/promotions', function () {
-    return view('promotions');
+// Публичные акции
+Route::get('/promotions', [PromotionsController::class, 'index'])
+    ->name('promotions.index');
+
+// // Админка
+// Route::prefix('/admin')->name('admin.')->group(function () {
+//     Route::resource('promotions', PromotionAdminController::class);
+// });
+// routes/web.php
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('promotions', PromotionAdminController::class);
 });
 
-use App\Models\Promotion;
-
-Route::get('/promotions', function () {
-    $promotions = Promotion::all(); // Получаем все акции из БД
-    return view('promotions', compact('promotions'));
-});
-
-use Illuminate\Support\Collection;
-
-Route::get('/promotions', function () {
-    $promotions = collect([
-        (object)[
-            'title' => 'Супер скидка',
-            'discount_percentage' => 20,
-            'description' => 'Только сегодня!'
-        ]
-    ]);
-    return view('promotions', compact('promotions'));
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('promotions', \App\Http\Controllers\Admin\PromotionAdminController::class);
 });

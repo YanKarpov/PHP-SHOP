@@ -14,16 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->decimal('discount_percentage', 5, 2); // Процент скидки с точностью до двух знаков
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->unsignedTinyInteger('discount_percentage'); // от 0 до 100
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
-
-        // Schema::create('promotions', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->timestamps();
-        // });
     }
 
     /**
