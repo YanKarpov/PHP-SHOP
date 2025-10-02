@@ -1,0 +1,30 @@
+<?php
+// database/migrations/2025_09_11_000000_create_stores_table.php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+	public function up(): void {
+		Schema::create('stores', function (Blueprint $table) {
+			$table->id();
+			$table->string('name', 255);
+			$table->string('street', 255);
+			$table->string('city', 120);
+			$table->string('postal_code', 20)->nullable();
+			$table->string('phone', 50)->nullable();
+			$table->string('email', 255)->nullable();
+			$table->string('map_url', 1024)->nullable();
+			$table->json('working_hours')->nullable(); // {"Пн-Пт":"10:00–20:00","Сб":"11:00–19:00","Вс":"выходной"}
+			$table->boolean('is_active')->default(true);
+			$table->timestamps();
+
+			$table->index(['city', 'is_active']);
+		});
+	}
+
+	public function down(): void {
+		Schema::dropIfExists('stores');
+	}
+};
