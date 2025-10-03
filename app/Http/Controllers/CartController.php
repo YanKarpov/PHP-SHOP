@@ -14,157 +14,125 @@ class CartController extends Controller
     /**
      * Получить корзину текущего пользователя/сессии
      */
-    public function getCart(Request $request): JsonResponse
-    {
-        try {
-            $cart = $this->getOrCreateCart($request);
-            $cart->load('items.product');
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'cart' => $cart,
-                    'total_price' => $cart->getTotalPrice(),
-                    'total_quantity' => $cart->getTotalQuantity(),
-                    'items_count' => $cart->items->count(),
-                ]
-            ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении корзины'
-            ], 500);
+public function index(Request $request)
+{
+    if (Auth::check()) {
+        // Авторизованный пользователь
+        $cart = Cart::with(['items.product'])
+            ->firstOrCreate(
+                ['user_id' => Auth::id()],
+                ['session_id' => $request->session()->getId()]
+            );
+    } else {
+        // Гость
+        $cart = Cart::with(['items.product'])
+            ->firstOrCreate(
+                ['session_id' => $request->session()->getId()]
+            );
+    }
+    dump(Cart::with(['items.product'])
+            ->firstOrCreate(['session_id' => $request->session()->getId()]));
+    dump($request->session());
+
+    return view('cart.index', compact('cart'));
+}
+protected function getOrCreateCart(Request $request)
+{
+    if (Auth::check()) {
+            // Для авторизованного пользователя
+            return Cart::firstOrCreate(
+                ['user_id' => Auth::id()],
+                ['session_id' => $request->session()->getId()]
+            );
         }
+
+        // Для гостя (по session_id)
+        return Cart::firstOrCreate(
+            ['session_id' => $request->session()->getId()]
+        );
     }
 
-    /**
-     * Добавить товар в корзину
-     */
-    public function addItem(Request $request): JsonResponse
-    {
-        try {
-            $request->validate([
-                'product_id' => 'required|exists:products,id',
-                'quantity' => 'sometimes|integer|min:1'
-            ]);
+public function add(Request $request, Product $product)
+{
+    $request->validate([
+        'quantity' => 'required|integer|min:1'
+    ]);
 
-            $cart = $this->getOrCreateCart($request);
-            $product = Product::findOrFail($request->product_id);
-            $quantity = $request->input('quantity', 1);
+    $cart = $this->getOrCreateCart($request);
 
-            // Проверяем есть ли товар в корзине
-            $existingItem = $cart->items()
-                ->where('product_id', $product->id)
-                ->first();
+    // Проверяем, есть ли уже товар
+    $item = $cart->items()->where('product_id', $product->id)->first();
 
-            if ($existingItem) {
-                $existingItem->increment('quantity', $quantity);
-            } else {
-                CartItem::create([
-                    'cart_id' => $cart->id,
-                    'product_id' => $product->id,
-                    'quantity' => $quantity,
-                    'price' => $product->price
-                ]);
-            }
-
-            $cart->touch();
-            $cart->load('items.product');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Товар добавлен в корзину',
-                'data' => [
-                    'cart' => $cart,
-                    'total_price' => $cart->getTotalPrice(),
-                    'total_quantity' => $cart->getTotalQuantity(),
-                ]
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при добавлении товара'
-            ], 500);
-        }
+    if ($item) {
+        $item->increment('quantity', $request->quantity);
+    } else {
+        $cart->items()->create([
+            'product_id' => $product->id,
+            'quantity'   => $request->quantity,
+            'price'      => $product->price,
+        ]);
     }
 
-    /**
-     * Удалить товар из корзины
-     */
-    public function removeItem(Request $request): JsonResponse
-    {
-        try {
-            $request->validate([
-                'product_id' => 'required|exists:products,id'
-            ]);
+    return back()->with('success', 'Товар добавлен в корзину');
+}
 
-            $cart = $this->getOrCreateCart($request);
-            
-            $cart->items()
-                ->where('product_id', $request->product_id)
-                ->delete();
 
-            $cart->touch();
-            $cart->load('items.product');
+public function test()
+{
+    $cart = Cart::with(['items.product'])->where('user_id', 1)->first();
+    
+    // Проверим что действительно возвращаем view
+    $view = view('cart.test', compact('cart'));
+    dump($cart);
+    dump($view);
+    
+    // Для отладки
+    \Log::info('Returning view with cart', ['cart_id' => $cart->id]);
+    
+    return $view;
+}
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Товар удален из корзины',
-                'data' => [
-                    'cart' => $cart,
-                    'total_price' => $cart->getTotalPrice(),
-                    'total_quantity' => $cart->getTotalQuantity(),
-                ]
-            ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при удалении товара'
-            ], 500);
-        }
+public function increase(CartItem $item)
+{
+    $item->increment('quantity');
+    return back();
+}
+
+public function decrease(CartItem $item)
+{
+    if ($item->quantity > 1) {
+        $item->decrement('quantity');
+    } else {
+        // Если количество стало 0 — удаляем товар из корзины
+        $item->delete();
     }
+    return back();
+}
 
-    /**
-     * Очистить корзину
-     */
-    public function clearCart(Request $request): JsonResponse
-    {
-        try {
-            $cart = $this->getOrCreateCart($request);
-            $cart->items()->delete();
-            $cart->touch();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Корзина очищена',
-                'data' => [
-                    'cart' => $cart,
-                    'total_price' => 0,
-                    'total_quantity' => 0,
-                ]
-            ]);
+public function update(Request $request, CartItem $item)
+{
+    $request->validate([
+        'quantity' => 'required|integer|min:1'
+    ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при очистке корзины'
-            ], 500);
-        }
-    }
+    $item->update([
+        'quantity' => $request->input('quantity')
+    ]);
 
-    /**
-     * Вспомогательный метод для получения корзины
-     */
-    private function getOrCreateCart(Request $request): Cart
-    {
-        if (Auth::check()) {
-            return Cart::firstOrCreate(['user_id' => Auth::id()]);
-        } else {
-            $sessionId = $request->session()->getId();
-            return Cart::firstOrCreate(['session_id' => $sessionId]);
-        }
-    }
+    return back()->with('success', 'Количество обновлено');
+}
+
+public function destroy(CartItem $item)
+{
+    $item->delete();
+    return back()->with('success', 'Товар удалён из корзины');
+}
+
+
+
+  
 }

@@ -25,10 +25,3 @@ Route::prefix('products/{product}')->group(function () {
     Route::get('/rating', [ReviewController::class, 'getProductRating']);
     Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth:api');
 });
-
-Route::prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'getCart']);
-    Route::post('/add', [CartController::class, 'addItem']);
-    Route::delete('/remove', [CartController::class, 'removeItem']);
-    Route::post('/clear', [CartController::class, 'clearCart']);
-});

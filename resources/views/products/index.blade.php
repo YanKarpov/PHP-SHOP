@@ -10,12 +10,15 @@
 <body>
     <div class="container mt-4">
         <h1 class="mb-4">Наши продукты</h1>
+        <a href="{{ route('cart.index') }}" class="btn btn-warning">
+            🛒 Перейти в корзину
+        </a>
         
         <div class="row">
             @foreach($products as $product)
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ $product->name }}</h5>
                             <p class="card-text">{{ Str::limit($product->description, 100) }}</p>
                             <p class="text-primary fw-bold">${{ number_format($product->price, 2) }}</p>
@@ -34,8 +37,21 @@
                             <p class="text-muted">
                                 {{ $product->approved_reviews_count }} отзывов
                             </p>
-                            
-                            <a href="{{ route('products.show', $product) }}" class="btn btn-primary">
+
+                            <!-- Форма добавления в корзину -->
+                            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="mt-auto">
+                                @csrf
+                                <div class="input-group mb-3">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="this.nextElementSibling.stepDown()">-</button>
+                                    <input type="number" name="quantity" value="1" min="1" class="form-control text-center" style="max-width:80px;">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="this.previousElementSibling.stepUp()">+</button>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-cart-plus"></i> В корзину
+                                </button>
+                            </form>
+
+                            <a href="{{ route('products.show', $product) }}" class="btn btn-link mt-2">
                                 Подробнее и отзывы
                             </a>
                         </div>

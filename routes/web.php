@@ -7,18 +7,17 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\AdminProductController;
-<<<<<<< HEAD
-use App\Http\Controllers\CartController;
-
-=======
 use App\Http\Controllers\Admin\NewsAdminController;
->>>>>>> origin/main
 use App\Http\Controllers\AdThesisController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AdminMenuController;
+use App\Http\Controllers\CartController;
+
 
 // Главная страница - продукты
 Route::get('/', [ProductController::class, 'index'])->name('home');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+
 
 // Страница меню
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -34,18 +33,6 @@ Route::get('/ad-theses', [AdThesisController::class, 'index']);
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 
-
-// Страница для тестирования корзины
-Route::get('/cart-test', function () {
-    return view('cart-test');
-});
-
-// Web-версия API для простого тестирования
-Route::prefix('cart')->group(function () {
-    Route::get('/web', [CartController::class, 'getCart'])->name('cart.web');
-    Route::post('/web/add', [CartController::class, 'addItem'])->name('cart.web.add');
-});
-
 // Простая аутентификация для демо
 Route::get('/login', fn() => view('simple-auth'))->name('login');
 Route::post('/login', function (Request $request) {
@@ -57,9 +44,6 @@ Route::post('/login', function (Request $request) {
 });
 Route::post('/logout', fn() => redirect()->route('home'))->name('logout');
 
-<<<<<<< HEAD
-
-=======
 // Админ-панель
 Route::prefix('admin')->name('admin.')->group(function () {
     // Продукты
@@ -92,4 +76,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Меню
     Route::resource('menu', AdminMenuController::class);
 });
->>>>>>> origin/main
+
+
+
+// Страница для тестирования корзины
+
+
+
+
+
+
+Route::prefix('cart')->group(function () {
+    Route::get('/test', [CartController::class, 'test'])->name('cart.test');
+    Route::post('/{item}/increase', [CartController::class, 'increase'])->name('cart.increase');
+    Route::post('/{item}/decrease', [CartController::class, 'decrease'])->name('cart.decrease');
+    Route::put('/{item}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+
+});
+
+
+// Route::post('/cart/{item}/increase', [CartController::class, 'increase'])->name('cart.increase');
+// Route::post('/cart/{item}/decrease', [CartController::class, 'decrease'])->name('cart.decrease');
+// Route::put('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
+// Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
+// Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+// Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
